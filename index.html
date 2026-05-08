@@ -888,12 +888,199 @@ footer{
   .hero-stats{gap:24px}
   .demo-device{transform:none}
 }
+/* ── FLOATING SIDE BUTTONS ── */
+.float-btns{
+  position:fixed;right:20px;top:50%;
+  transform:translateY(-50%);
+  z-index:200;
+  display:flex;flex-direction:column;gap:12px;
+}
+.float-btn{
+  width:52px;height:52px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:none;border:none;text-decoration:none;
+  position:relative;
+  transition:all .3s cubic-bezier(.23,1,.32,1);
+  /* Glass morphism */
+  background:rgba(255,255,255,0.07);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.15),
+    inset 0 -1px 0 rgba(0,0,0,.2);
+}
+.float-btn::before{
+  content:'';
+  position:absolute;inset:0;border-radius:16px;
+  background:linear-gradient(135deg,rgba(255,255,255,.15) 0%,transparent 60%);
+  pointer-events:none;
+}
+.float-btn:hover{
+  transform:translateX(-6px) scale(1.08);
+  background:rgba(124,106,247,.25);
+  border-color:rgba(124,106,247,.5);
+  box-shadow:
+    0 12px 40px rgba(124,106,247,.3),
+    inset 0 1px 0 rgba(255,255,255,.2),
+    0 0 0 1px rgba(124,106,247,.2);
+}
+.float-btn svg{
+  width:20px;height:20px;
+  filter:drop-shadow(0 0 6px currentColor);
+  transition:transform .3s ease;
+}
+.float-btn:hover svg{transform:scale(1.15)}
+
+/* Tooltip */
+.float-btn::after{
+  content:attr(data-tip);
+  position:absolute;right:60px;top:50%;
+  transform:translateY(-50%) translateX(8px);
+  background:rgba(12,12,16,.95);
+  color:var(--text);font-size:12px;font-weight:500;
+  padding:6px 12px;border-radius:8px;
+  white-space:nowrap;pointer-events:none;
+  opacity:0;transition:all .25s ease;
+  border:1px solid var(--border2);
+  backdrop-filter:blur(12px);
+  font-family:var(--font-body);
+}
+.float-btn:hover::after{
+  opacity:1;transform:translateY(-50%) translateX(0);
+}
+
+/* Color accent per button */
+.float-btn-user:hover{
+  background:rgba(124,106,247,.25);
+  border-color:rgba(124,106,247,.5);
+  box-shadow:0 12px 40px rgba(124,106,247,.3),inset 0 1px 0 rgba(255,255,255,.2);
+}
+.float-btn-share:hover{
+  background:rgba(6,214,160,.2);
+  border-color:rgba(6,214,160,.4);
+  box-shadow:0 12px 40px rgba(6,214,160,.25),inset 0 1px 0 rgba(255,255,255,.2);
+}
+.float-btn-qr:hover{
+  background:rgba(245,200,66,.2);
+  border-color:rgba(245,200,66,.4);
+  box-shadow:0 12px 40px rgba(245,200,66,.25),inset 0 1px 0 rgba(255,255,255,.2);
+}
+.float-btn-wa:hover{
+  background:rgba(37,211,102,.2);
+  border-color:rgba(37,211,102,.4);
+  box-shadow:0 12px 40px rgba(37,211,102,.3),inset 0 1px 0 rgba(255,255,255,.2);
+}
+.float-btn-wa{
+  background:rgba(37,211,102,.15);
+  border-color:rgba(37,211,102,.3);
+}
+
+/* QR Modal */
+.qr-modal-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.qr-modal-overlay.open{opacity:1;pointer-events:auto}
+.qr-modal{
+  background:rgba(16,16,24,.95);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;padding:36px;
+  text-align:center;
+  box-shadow:0 40px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.1);
+  backdrop-filter:blur(30px);
+  transform:scale(.9) translateY(16px);
+  transition:transform .3s cubic-bezier(.23,1,.32,1);
+  max-width:320px;width:90%;
+}
+.qr-modal-overlay.open .qr-modal{transform:scale(1) translateY(0)}
+.qr-modal-title{
+  font-family:var(--font-display);
+  font-size:20px;font-weight:800;
+  margin-bottom:6px;
+}
+.qr-modal-sub{font-size:13px;color:var(--text2);margin-bottom:24px}
+.qr-img-wrap{
+  width:200px;height:200px;margin:0 auto 20px;
+  border-radius:16px;overflow:hidden;
+  background:#fff;padding:12px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.qr-img-wrap img{width:100%;height:100%;display:block}
+.qr-modal-note{font-size:12px;color:var(--text3);margin-bottom:20px}
+.qr-modal-close{
+  padding:10px 24px;border-radius:10px;
+  background:var(--surface2);color:var(--text2);
+  border:1px solid var(--border2);
+  font-size:13px;font-weight:500;cursor:none;
+  font-family:var(--font-body);transition:all .2s;
+}
+.qr-modal-close:hover{background:var(--surface);color:var(--text)}
+
+@media(max-width:768px){
+  .float-btns{right:12px;gap:10px}
+  .float-btn{width:46px;height:46px;border-radius:14px}
+  .float-btn::after{display:none}
+}
 </style>
 </head>
 <body>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
+
+<!-- FLOATING SIDE BUTTONS -->
+<div class="float-btns">
+  <!-- Ir a TΛLOS -->
+  <a href="https://app.nexuswere.com" target="_blank"
+    class="float-btn float-btn-user" data-tip="Acceder a TΛLOS">
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(167,139,250,1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+  </a>
+  <!-- Compartir por WhatsApp -->
+  <button onclick="shareOnWhatsApp()"
+    class="float-btn float-btn-share" data-tip="Compartir">
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(6,214,160,1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+  </button>
+  <!-- QR Code -->
+  <button onclick="openQR()"
+    class="float-btn float-btn-qr" data-tip="Código QR">
+    <svg viewBox="0 0 24 24" fill="none" stroke="rgba(245,200,66,1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="3" y="14" width="7" height="7"/>
+      <path d="M14 14h2v2h-2zM18 14h3M14 18h2M18 18h3M14 21h3M21 18v3"/>
+    </svg>
+  </button>
+  <!-- WhatsApp contacto -->
+  <a href="https://wa.me/593962745054?text=Hola%21%20Estoy%20interesado%20en%20implementar%20T%CE%9BLOS%20para%20impulsar%20y%20automatizar%20mi%20negocio%20de%20manera%20digital%20junto%20a%20NexusWere.%20%C2%BFMe%20pueden%20dar%20m%C3%A1s%20informaci%C3%B3n%3F%20%F0%9F%9A%80" target="_blank"
+    class="float-btn float-btn-wa" data-tip="Contactar">
+    <svg viewBox="0 0 24 24" fill="rgba(37,211,102,1)">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+</div>
+
+<!-- QR MODAL -->
+<div class="qr-modal-overlay" id="qrOverlay" onclick="closeQR(event)">
+  <div class="qr-modal">
+    <div class="qr-modal-title">Escanea y entra</div>
+    <div class="qr-modal-sub">Comparte NexusWere al instante</div>
+    <div class="qr-img-wrap">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=176x176&data=https://nexuswere.com&color=7c6af7&bgcolor=ffffff" alt="QR nexuswere.com">
+    </div>
+    <div class="qr-modal-note">Apunta la cámara de tu celular al código</div>
+    <button class="qr-modal-close" onclick="closeQR()">Cerrar</button>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -1453,6 +1640,32 @@ document.querySelector('.demo-device-wrap').addEventListener('mousemove',e=>{
 });
 document.querySelector('.demo-device-wrap').addEventListener('mouseleave',()=>{
   document.getElementById('demoDevice').style.transform='rotateX(8deg) rotateY(-4deg)';
+});
+
+// ── FLOATING BUTTONS ──
+function shareOnWhatsApp(){
+  const txt=encodeURIComponent('🚀 Mira esto — TΛLOS, el sistema de facturación electrónica SRI, POS y contabilidad para negocios en Ecuador. Todo en uno: https://nexuswere.com');
+  window.open('https://wa.me/?text='+txt,'_blank');
+}
+function openQR(){
+  document.getElementById('qrOverlay').classList.add('open');
+}
+function closeQR(e){
+  if(!e||e.target===document.getElementById('qrOverlay')||e.target.classList.contains('qr-modal-close')){
+    document.getElementById('qrOverlay').classList.remove('open');
+  }
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeQR()});
+
+// Animar botones al cargar
+document.querySelectorAll('.float-btn').forEach((btn,i)=>{
+  btn.style.opacity='0';
+  btn.style.transform='translateX(20px)';
+  setTimeout(()=>{
+    btn.style.transition='opacity .4s ease, transform .4s cubic-bezier(.23,1,.32,1)';
+    btn.style.opacity='1';
+    btn.style.transform='translateX(0)';
+  },800+(i*120));
 });
 </script>
 </body>
