@@ -776,7 +776,58 @@ nav{
   border:1px solid var(--border);
 }
 
-/* ── PRICING ── */
+/* ── HERO H1 FIX ── */
+.hero h1{
+  font-family:var(--font-display);
+  font-size:clamp(36px,6vw,80px);
+  font-weight:800;
+  line-height:1.05;
+  letter-spacing:-.03em;
+  margin-bottom:24px;
+  animation:fadeUp .8s .1s ease both;
+  max-width:800px;
+}
+/* ── PRICING DUAL ── */
+.pricing-dual{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  max-width:900px;
+  margin:0 auto;
+}
+.pricing-card-basic{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:28px;padding:36px;
+  position:relative;overflow:hidden;
+}
+.pricing-card-basic::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);
+}
+.pricing-card-pro{
+  background:var(--surface);
+  border:1px solid rgba(124,106,247,.5);
+  border-radius:28px;padding:36px;
+  position:relative;overflow:hidden;
+  box-shadow:0 0 60px rgba(124,106,247,.12);
+}
+.pricing-card-pro::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+}
+.pricing-popular{
+  position:absolute;top:20px;right:20px;
+  padding:4px 12px;border-radius:100px;
+  background:var(--accent);color:#fff;
+  font-size:11px;font-weight:700;
+  letter-spacing:.04em;
+}
+@media(max-width:768px){
+  .pricing-dual{grid-template-columns:1fr}
+}
 .pricing-section{
   padding:80px 24px 100px;
   position:relative;overflow:hidden;
@@ -1593,6 +1644,72 @@ footer{
   </div>
 </section>
 
+
+
+
+
+<section class="pricing-section reveal" id="precio">
+  <div class="section-label">Planes</div>
+  <h2 class="section-title" style="margin-bottom:16px">Elige tu plan.<br>Escala cuando quieras.</h2>
+  <p class="section-sub">Sin contratos forzosos. Sin módulos extra. Cancela cuando quieras.</p>
+  <div class="pricing-dual">
+
+    <!-- BASIC -->
+    <div class="pricing-card-basic">
+      <div class="pricing-badge" style="background:rgba(255,255,255,.08);color:var(--text2);border:1px solid var(--border2)">TΛLOS Basic</div>
+      <div class="pricing-name" style="font-family:var(--font-display);font-size:22px;font-weight:800;margin:12px 0 6px">Para empezar fuerte</div>
+      <div class="pricing-desc" style="font-size:13px;color:var(--text2);margin-bottom:24px">Lo esencial para digitalizar y facturar tu negocio desde el primer día.</div>
+      <div class="pricing-price">
+        <span class="pricing-currency">$</span>
+        <span class="pricing-amount" style="font-size:56px">100</span>
+        <span class="pricing-period">/ mes</span>
+      </div>
+      <div class="pricing-note">Facturación mensual · Cancela cuando quieras</div>
+      <ul class="pricing-features">
+        <li class="pricing-feature">POS con escáner de código de barras</li>
+        <li class="pricing-feature">Facturación electrónica SRI — facturas y notas de crédito</li>
+        <li class="pricing-feature">Control de inventario y productos</li>
+        <li class="pricing-feature">Gestión de clientes y proveedores</li>
+        <li class="pricing-feature">Reportes básicos de ventas</li>
+        <li class="pricing-feature">100 MB de almacenamiento en la nube</li>
+        <li class="pricing-feature">Soporte por WhatsApp</li>
+      </ul>
+      <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20contratar%20T%CE%9BLOS%20Basic" target="_blank" class="btn-pricing" style="background:var(--surface2);box-shadow:none;border:1px solid var(--border2)">Empezar con Basic →</a>
+    </div>
+
+    <!-- PRO -->
+    <div class="pricing-card-pro">
+      <div class="pricing-popular">⭐ Recomendado</div>
+      <div class="pricing-badge">✦ TΛLOS Pro</div>
+      <div class="pricing-name" style="font-family:var(--font-display);font-size:22px;font-weight:800;margin:12px 0 6px">El sistema completo</div>
+      <div class="pricing-desc" style="font-size:13px;color:var(--text2);margin-bottom:24px">Todo activado. Para negocios que no se conforman con lo básico.</div>
+      <div class="pricing-price">
+        <span class="pricing-currency">$</span>
+        <span class="pricing-amount">200</span>
+        <span class="pricing-period">/ mes</span>
+      </div>
+      <div class="pricing-note">Precio en dólares · Facturación mensual · Cancela cuando quieras</div>
+      <ul class="pricing-features">
+        <li class="pricing-feature">Todo lo del plan Basic, más:</li>
+        <li class="pricing-feature">Contabilidad completa con asientos automáticos</li>
+        <li class="pricing-feature">Asistente IA en WhatsApp — 24/7</li>
+        <li class="pricing-feature">Nómina, RRHH y gestión de colaboradores</li>
+        <li class="pricing-feature">Portal de clientes con app instalable</li>
+        <li class="pricing-feature">Importaciones CIF y multi-bodega</li>
+        <li class="pricing-feature">Formularios SRI 104 y 101 automáticos</li>
+        <li class="pricing-feature">500 MB de almacenamiento en la nube</li>
+        <li class="pricing-feature">Soporte prioritario por WhatsApp</li>
+      </ul>
+      <a href="https://app.nexuswere.com" target="_blank" class="btn-pricing">Comenzar con Pro →</a>
+      <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20contratar%20T%CE%9BLOS%20Pro" target="_blank" class="btn-wa">
+        <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Consultar por WhatsApp
+      </a>
+    </div>
+
+  </div>
+</section>
+
 <!-- SERVICIOS NEXUSWERE -->
 <section class="services-section reveal">
   <div class="section-label" style="text-align:center;color:var(--accent3)">Ecosistema NexusWere</div>
@@ -1604,13 +1721,11 @@ footer{
       <div class="service-title">Soporte & Mantenimiento PC</div>
       <div class="service-desc">Diagnóstico avanzado, limpieza de hardware, optimización de software y reparación de componentes. Tu PC más rápida que nunca.</div>
       <ul class="service-list">
-        <li style="--c:rgba(59,130,246,1)"><span style="color:rgba(59,130,246,1)">✓</span> Optimización y limpieza profunda</li>
+        <li><span style="color:rgba(59,130,246,1)">✓</span> Optimización y limpieza profunda</li>
         <li><span style="color:rgba(59,130,246,1)">✓</span> Eliminación de virus y malware</li>
         <li><span style="color:rgba(59,130,246,1)">✓</span> Mantenimiento térmico y preventivo</li>
       </ul>
-      <a href="https://wa.me/593962745054?text=Hola!%20Necesito%20soporte%20para%20mi%20PC" target="_blank" class="btn-service" style="border-color:rgba(59,130,246,.3);color:rgba(59,130,246,.9)">
-        Consultar →
-      </a>
+      <a href="https://wa.me/593962745054?text=Hola!%20Necesito%20soporte%20para%20mi%20PC" target="_blank" class="btn-service" style="border-color:rgba(59,130,246,.3);color:rgba(59,130,246,.9)">Consultar →</a>
     </div>
     <div class="service-card">
       <div class="service-icon-wrap" style="background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.25)">📱</div>
@@ -1621,9 +1736,7 @@ footer{
         <li><span style="color:rgba(168,85,247,1)">✓</span> Garantía Nexus de 6 meses</li>
         <li><span style="color:rgba(168,85,247,1)">✓</span> Totalmente desbloqueados</li>
       </ul>
-      <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20ver%20celulares%20certificados%20Nexus" target="_blank" class="btn-service" style="border-color:rgba(168,85,247,.3);color:rgba(168,85,247,.9)">
-        Ver disponibles →
-      </a>
+      <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20ver%20celulares%20certificados%20Nexus" target="_blank" class="btn-service" style="border-color:rgba(168,85,247,.3);color:rgba(168,85,247,.9)">Ver disponibles →</a>
     </div>
     <div class="service-card">
       <div class="service-icon-wrap" style="background:rgba(6,214,160,.15);border:1px solid rgba(6,214,160,.25)">🎯</div>
@@ -1634,48 +1747,11 @@ footer{
         <li><span style="color:var(--accent3)">✓</span> Comparativa de precios del mercado</li>
         <li><span style="color:var(--accent3)">✓</span> Configuración inicial incluida</li>
       </ul>
-      <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20asesor%C3%ADa%20para%20comprar%20un%20equipo" target="_blank" class="btn-service" style="border-color:rgba(6,214,160,.3);color:var(--accent3)">
-        Asesorarme →
-      </a>
+      <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20asesor%C3%ADa%20para%20comprar%20un%20equipo" target="_blank" class="btn-service" style="border-color:rgba(6,214,160,.3);color:var(--accent3)">Asesorarme →</a>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
-<section class="pricing-section reveal" id="precio">
-  <div class="section-label">Precio</div>
-  <h2 class="section-title" style="margin-bottom:48px">Sin sorpresas.<br>Todo incluido.</h2>
-  <div class="pricing-card">
-    <div class="pricing-badge">✦ Licencia Completa</div>
-    <div class="pricing-name">TΛLOS Pro</div>
-    <div class="pricing-desc">Una sola licencia. Todas las funciones activadas. Sin límites.</div>
-    <div class="pricing-price">
-      <span class="pricing-currency">$</span>
-      <span class="pricing-amount">250</span>
-      <span class="pricing-period">/ mes</span>
-    </div>
-    <div class="pricing-note">Precio en dólares · Facturación mensual · Cancela cuando quieras</div>
-    <ul class="pricing-features">
-      <li class="pricing-feature">POS ilimitado con escáner y multi-bodega</li>
-      <li class="pricing-feature">Facturación electrónica SRI — todos los comprobantes</li>
-      <li class="pricing-feature">Contabilidad completa con asientos automáticos</li>
-      <li class="pricing-feature">Asistente IA en WhatsApp — 24/7</li>
-      <li class="pricing-feature">Nómina, RRHH y gestión de colaboradores</li>
-      <li class="pricing-feature">Portal de clientes con app instalable</li>
-      <li class="pricing-feature">Importaciones y control de inventario</li>
-      <li class="pricing-feature">Reportes financieros y exportación Excel</li>
-      <li class="pricing-feature">500 MB de almacenamiento en la nube</li>
-      <li class="pricing-feature">Soporte prioritario por WhatsApp</li>
-    </ul>
-    <a href="https://app.nexuswere.com" target="_blank" class="btn-pricing">Comenzar ahora →</a>
-    <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20contratar%20TΛLOS" target="_blank" class="btn-wa">
-      <svg class="wa-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Consultar por WhatsApp
-    </a>
-  </div>
-</section>
-
-<!-- CTA -->
 <section class="cta-section reveal">
   <h2 class="cta-title">Tu negocio merece<br>la mejor herramienta.</h2>
   <p class="cta-sub">Únete a los negocios ecuatorianos que ya gestionan todo con TΛLOS. Empieza hoy mismo.</p>
