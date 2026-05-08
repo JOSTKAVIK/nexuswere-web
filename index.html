@@ -930,7 +930,97 @@ footer{
   .hero-stats{gap:24px}
   .demo-device{transform:none}
 }
-/* ── FLOATING SIDE BUTTONS ── */
+/* ── SERVICIOS NEXUSWERE ── */
+.services-section{
+  padding:80px 24px 100px;
+  max-width:1200px;margin:0 auto;
+  position:relative;
+}
+.services-section::before{
+  content:'';position:absolute;
+  top:0;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse,rgba(6,214,160,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.services-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+}
+.service-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;padding:28px;
+  position:relative;overflow:hidden;
+  transition:all .35s cubic-bezier(.23,1,.32,1);
+  transform-style:preserve-3d;
+}
+.service-card::before{
+  content:'';position:absolute;
+  inset:0;opacity:0;border-radius:20px;
+  background:radial-gradient(circle at 50% 0%,rgba(6,214,160,.1) 0%,transparent 60%);
+  transition:opacity .3s;
+}
+.service-card::after{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(6,214,160,.4),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.service-card:hover{
+  transform:translateY(-8px) rotateX(2deg);
+  border-color:rgba(6,214,160,.3);
+  box-shadow:0 24px 60px rgba(0,0,0,.4),0 0 0 1px rgba(6,214,160,.1);
+}
+.service-card:hover::before,.service-card:hover::after{opacity:1}
+.service-icon-wrap{
+  width:48px;height:48px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;margin-bottom:18px;
+  position:relative;
+}
+.service-icon-wrap::before{
+  content:'';position:absolute;inset:0;border-radius:14px;
+  background:inherit;filter:blur(10px);opacity:.4;
+}
+.service-title{
+  font-family:var(--font-display);
+  font-size:17px;font-weight:700;
+  margin-bottom:10px;letter-spacing:-.02em;
+}
+.service-desc{
+  font-size:13px;color:var(--text2);
+  line-height:1.65;margin-bottom:16px;
+}
+.service-list{list-style:none;margin-bottom:20px}
+.service-list li{
+  font-size:12px;color:var(--text2);
+  padding:5px 0;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.service-list li:last-child{border-bottom:none}
+.service-list li::before{
+  content:'✓';font-size:10px;font-weight:700;
+  flex-shrink:0;
+}
+.btn-service{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 18px;border-radius:100px;
+  font-size:12px;font-weight:600;
+  background:transparent;border:1px solid var(--border2);
+  color:var(--text2);text-decoration:none;cursor:none;
+  transition:all .2s;font-family:var(--font-body);
+}
+.btn-service:hover{
+  background:rgba(6,214,160,.1);
+  border-color:rgba(6,214,160,.3);
+  color:var(--accent3);
+}
+@media(max-width:768px){
+  .services-grid{grid-template-columns:1fr}
+}
+</style>
 .float-btns{
   position:fixed;right:20px;top:50%;
   transform:translateY(-50%);
@@ -1147,8 +1237,8 @@ footer{
     <span>Hecho en Ecuador · SRI Certificado</span>
   </div>
   <h1>
-    <span class="line1">El sistema operativo</span>
-    <span class="gradient">para tu negocio</span>
+    <span class="line1">El sistema operativo para</span>
+    <span class="gradient">negocios que no se conforman.</span>
   </h1>
   <p class="hero-sub">POS inteligente, facturación electrónica SRI, contabilidad automatizada, WhatsApp IA y más. Todo conectado. Todo en uno.</p>
   <div class="hero-actions">
@@ -1436,13 +1526,14 @@ footer{
 
 <!-- FEATURES -->
 <section class="features-section reveal" id="funciones">
-  <div class="section-label">Todo incluido</div>
-  <h2 class="section-title" style="margin-bottom:48px">Una licencia.<br>Todas las funciones.</h2>
+  <div class="section-label">Todo incluido en TΛLOS</div>
+  <h2 class="section-title" style="margin-bottom:16px">Una licencia.<br>Todas las funciones.</h2>
+  <p class="section-sub">Sin módulos extras, sin costos ocultos. Todo lo que tu negocio necesita desde el primer día.</p>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feature-icon">🛒</div>
       <div class="feature-title">POS Inteligente</div>
-      <div class="feature-desc">Punto de venta táctil con escáner de código de barras, múltiples métodos de pago, descuentos VIP y soporte offline.</div>
+      <div class="feature-desc">Punto de venta táctil con escáner de código de barras, múltiples métodos de pago incluyendo PayPal QR, descuentos VIP y soporte offline.</div>
       <div class="feature-tags">
         <span class="feature-tag">Código de barras</span>
         <span class="feature-tag">PayPal QR</span>
@@ -1452,7 +1543,7 @@ footer{
     <div class="feature-card">
       <div class="feature-icon">🧾</div>
       <div class="feature-title">Facturación SRI 100%</div>
-      <div class="feature-desc">Todos los comprobantes electrónicos. Factura, nota crédito, retención, guía de remisión. IVA por producto (15%, 5%, 0%).</div>
+      <div class="feature-desc">Los 6 comprobantes electrónicos autorizados. Factura, nota crédito, retención, liquidación, guía de remisión. IVA por producto (15%, 5%, 0%).</div>
       <div class="feature-tags">
         <span class="feature-tag">Firma digital P12</span>
         <span class="feature-tag">ATS automático</span>
@@ -1462,17 +1553,17 @@ footer{
     <div class="feature-card">
       <div class="feature-icon">📊</div>
       <div class="feature-title">Contabilidad Completa</div>
-      <div class="feature-desc">Asientos automáticos en cada transacción. Libro diario, balance general, P&G, formularios 104 y 101 listos para el SRI.</div>
+      <div class="feature-desc">Asientos automáticos en cada transacción. Libro diario, balance general, P&G, formularios 104 y 101 listos para el SRI sin trabajo manual.</div>
       <div class="feature-tags">
         <span class="feature-tag">NIIF PYMES</span>
-        <span class="feature-tag">Asientos automáticos</span>
+        <span class="feature-tag">Asientos auto</span>
         <span class="feature-tag">Exportar Excel</span>
       </div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">🤖</div>
       <div class="feature-title">Asistente IA WhatsApp</div>
-      <div class="feature-desc">Tu negocio atiende clientes 24/7 por WhatsApp. Toma pedidos, responde preguntas, registra clientes nuevos automáticamente.</div>
+      <div class="feature-desc">Tu negocio atiende clientes 24/7 por WhatsApp. Toma pedidos, responde preguntas sobre stock y precios, registra clientes nuevos automáticamente.</div>
       <div class="feature-tags">
         <span class="feature-tag">Groq IA</span>
         <span class="feature-tag">Pedidos auto</span>
@@ -1482,22 +1573,70 @@ footer{
     <div class="feature-card">
       <div class="feature-icon">👥</div>
       <div class="feature-title">RRHH & Nómina</div>
-      <div class="feature-desc">Rol de pagos, provisiones 13°/14°/vacaciones, préstamos, liquidaciones y contratos. Todo automatizado con IESS.</div>
+      <div class="feature-desc">Rol de pagos, provisiones 13°/14°/vacaciones, préstamos, liquidaciones y contratos. Todo calculado con IESS automáticamente.</div>
       <div class="feature-tags">
         <span class="feature-tag">IESS automático</span>
-        <span class="feature-tag">RDEP Form. 107</span>
+        <span class="feature-tag">Form. 107</span>
         <span class="feature-tag">Actas finiquito</span>
       </div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">📦</div>
       <div class="feature-title">Inventario & Bodegas</div>
-      <div class="feature-desc">Control de stock en tiempo real, múltiples bodegas, importaciones CIF, alertas de stock mínimo y kardex automático.</div>
+      <div class="feature-desc">Control de stock en tiempo real, múltiples bodegas, importaciones CIF con asiento contable automático, alertas de stock mínimo y kardex.</div>
       <div class="feature-tags">
         <span class="feature-tag">Multi-bodega</span>
         <span class="feature-tag">Importaciones</span>
         <span class="feature-tag">Kardex</span>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS NEXUSWERE -->
+<section class="services-section reveal">
+  <div class="section-label" style="text-align:center;color:var(--accent3)">Ecosistema NexusWere</div>
+  <h2 class="section-title" style="margin-bottom:16px;text-align:center">Más allá de TΛLOS.<br>Tu aliado tecnológico.</h2>
+  <p class="section-sub">NexusWere no solo hace software. Somos el equipo tecnológico de tu negocio — desde el sistema hasta el hardware.</p>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon-wrap" style="background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.25)">💻</div>
+      <div class="service-title">Soporte & Mantenimiento PC</div>
+      <div class="service-desc">Diagnóstico avanzado, limpieza de hardware, optimización de software y reparación de componentes. Tu PC más rápida que nunca.</div>
+      <ul class="service-list">
+        <li style="--c:rgba(59,130,246,1)"><span style="color:rgba(59,130,246,1)">✓</span> Optimización y limpieza profunda</li>
+        <li><span style="color:rgba(59,130,246,1)">✓</span> Eliminación de virus y malware</li>
+        <li><span style="color:rgba(59,130,246,1)">✓</span> Mantenimiento térmico y preventivo</li>
+      </ul>
+      <a href="https://wa.me/593962745054?text=Hola!%20Necesito%20soporte%20para%20mi%20PC" target="_blank" class="btn-service" style="border-color:rgba(59,130,246,.3);color:rgba(59,130,246,.9)">
+        Consultar →
+      </a>
+    </div>
+    <div class="service-card">
+      <div class="service-icon-wrap" style="background:rgba(168,85,247,.15);border:1px solid rgba(168,85,247,.25)">📱</div>
+      <div class="service-title">Móviles Certificados Nexus</div>
+      <div class="service-desc">Celulares de segunda mano rigurosamente inspeccionados y certificados por nuestros técnicos. Calidad premium, precio justo, garantía real.</div>
+      <ul class="service-list">
+        <li><span style="color:rgba(168,85,247,1)">✓</span> Batería al +85% garantizada</li>
+        <li><span style="color:rgba(168,85,247,1)">✓</span> Garantía Nexus de 6 meses</li>
+        <li><span style="color:rgba(168,85,247,1)">✓</span> Totalmente desbloqueados</li>
+      </ul>
+      <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20ver%20celulares%20certificados%20Nexus" target="_blank" class="btn-service" style="border-color:rgba(168,85,247,.3);color:rgba(168,85,247,.9)">
+        Ver disponibles →
+      </a>
+    </div>
+    <div class="service-card">
+      <div class="service-icon-wrap" style="background:rgba(6,214,160,.15);border:1px solid rgba(6,214,160,.25)">🎯</div>
+      <div class="service-title">Personal Shopper Tecnológico</div>
+      <div class="service-desc">¿No sabes qué comprar? Te acompañamos y asesoramos para elegir tu próximo equipo basándonos en tu presupuesto y necesidades reales.</div>
+      <ul class="service-list">
+        <li><span style="color:var(--accent3)">✓</span> Análisis de necesidades personalizado</li>
+        <li><span style="color:var(--accent3)">✓</span> Comparativa de precios del mercado</li>
+        <li><span style="color:var(--accent3)">✓</span> Configuración inicial incluida</li>
+      </ul>
+      <a href="https://wa.me/593962745054?text=Hola!%20Quiero%20asesor%C3%ADa%20para%20comprar%20un%20equipo" target="_blank" class="btn-service" style="border-color:rgba(6,214,160,.3);color:var(--accent3)">
+        Asesorarme →
+      </a>
     </div>
   </div>
 </section>
