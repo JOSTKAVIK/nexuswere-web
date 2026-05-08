@@ -100,12 +100,56 @@ nav.sc{background:rgba(6,6,10,.92)}
 
 /* MARQUEE */
 .mq-s{padding:100px 0;overflow:hidden;position:relative}
-.mq-s::before,.mq-s::after{content:'';position:absolute;top:0;bottom:0;width:130px;z-index:10;pointer-events:none}
+.mq-s::before,.mq-s::after{content:'';position:absolute;top:0;bottom:0;width:160px;z-index:10;pointer-events:none}
 .mq-s::before{left:0;background:linear-gradient(to right,var(--bg),transparent)}
 .mq-s::after{right:0;background:linear-gradient(to left,var(--bg),transparent)}
-.mq-row{display:flex;gap:12px;margin-bottom:12px;will-change:transform}
-.mq-tag{flex-shrink:0;padding:10px 22px;border-radius:100px;border:1px solid var(--bd2);background:var(--sf);font-size:12px;font-weight:600;color:var(--t2);letter-spacing:.03em;white-space:nowrap;backdrop-filter:blur(8px);display:inline-flex;align-items:center;gap:10px}
-.mq-tag span{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.mq-row{display:flex;gap:16px;margin-bottom:16px;will-change:transform;align-items:stretch}
+
+/* Tarjeta marquee grande con 3D */
+.mq-card{
+  flex-shrink:0;
+  width:220px;height:110px;
+  border-radius:20px;
+  border:1px solid var(--bd2);
+  background:var(--sf);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:14px 16px;
+  perspective:400px;
+  cursor:none;
+  transition:border-color .35s,box-shadow .35s;
+}
+.mq-card:hover{border-color:rgba(255,255,255,.22);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+
+/* Sheen de luz al hover */
+.mq-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,transparent 60%);
+  border-radius:inherit;opacity:0;transition:opacity .4s;pointer-events:none;
+}
+.mq-card:hover::after{opacity:1}
+
+/* Canvas 3D interno */
+.mq-card canvas{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  opacity:.85;pointer-events:none;
+}
+
+/* Texto de la tarjeta */
+.mq-label{
+  position:relative;z-index:2;
+  font-size:12px;font-weight:700;color:var(--t);
+  letter-spacing:.02em;line-height:1.3;
+}
+.mq-dot{
+  position:relative;z-index:2;
+  width:7px;height:7px;border-radius:50%;flex-shrink:0;
+  margin-bottom:10px;
+}
+
+/* Keyframes para las animaciones de canvas */
+@keyframes mqPulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes mqSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 /* SECTION SHARED */
 .sw{max-width:1160px;margin:0 auto;padding:0 32px}
@@ -749,27 +793,290 @@ footer{padding:44px 48px;border-top:1px solid var(--bd);display:flex;align-items
   });
 })();
 
-// ═══ MARQUEE ═══
+// ═══ MARQUEE — Tarjetas grandes con animación 3D canvas ═══
 (function(){
+  // Tipos de animación 3D por tarjeta
+  const ANIM = {
+    orbit: function(cv, color) {
+      const ctx = cv.getContext('2d'), W=cv.width, H=cv.height;
+      let t=Math.random()*Math.PI*2;
+      const cx=W/2, cy=H/2;
+      const hex = color.replace('#','');
+      const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+      const dots=[
+        {a:0,  ra:W*.32, rb:H*.16, size:4},
+        {a:2.1,ra:W*.26, rb:H*.13, size:2.5},
+        {a:4.2,ra:W*.22, rb:H*.11, size:3},
+      ];
+      function frame(){
+        ctx.clearRect(0,0,W,H);
+        t+=.018;
+        // Orbit path
+        ctx.beginPath();
+        ctx.ellipse(cx,cy,W*.32,H*.16,0,0,Math.PI*2);
+        ctx.strokeStyle=`rgba(${r},${g},${b},.12)`;ctx.lineWidth=1;ctx.stroke();
+        // Dots on orbit
+        dots.forEach((d,i)=>{
+          const angle=t*(.8+i*.2)+d.a;
+          const x=cx+Math.cos(angle)*d.ra;
+          const y=cy+Math.sin(angle)*d.rb;
+          const alpha=(.5+.5*Math.sin(angle))*.8;
+          // Shadow
+          const sg=ctx.createRadialGradient(x,y,0,x,y,d.size*3);
+          sg.addColorStop(0,`rgba(${r},${g},${b},${alpha*.5})`);
+          sg.addColorStop(1,'transparent');
+          ctx.fillStyle=sg;ctx.beginPath();ctx.arc(x,y,d.size*3,0,Math.PI*2);ctx.fill();
+          // Core
+          ctx.fillStyle=`rgba(${r},${g},${b},${alpha})`;
+          ctx.beginPath();ctx.arc(x,y,d.size,0,Math.PI*2);ctx.fill();
+        });
+        // Center glow
+        const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,12);
+        cg.addColorStop(0,`rgba(${r},${g},${b},.35)`);cg.addColorStop(1,'transparent');
+        ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx,cy,12,0,Math.PI*2);ctx.fill();
+        requestAnimationFrame(frame);
+      }
+      frame();
+    },
+
+    wave: function(cv, color) {
+      const ctx = cv.getContext('2d'), W=cv.width, H=cv.height;
+      let t=0;
+      const hex=color.replace('#','');
+      const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+      const waves=[
+        {spd:.028, amp:H*.18, freq:2.8, y:H*.4, alpha:.5},
+        {spd:.02,  amp:H*.12, freq:3.5, y:H*.52, alpha:.3},
+        {spd:.038, amp:H*.08, freq:4.2, y:H*.62, alpha:.2},
+      ];
+      function frame(){
+        ctx.clearRect(0,0,W,H);t+=1;
+        waves.forEach(w=>{
+          ctx.beginPath();
+          ctx.moveTo(0,w.y);
+          for(let x=0;x<=W;x+=3){
+            ctx.lineTo(x, w.y+Math.sin((x/W)*Math.PI*w.freq+t*w.spd)*w.amp);
+          }
+          ctx.strokeStyle=`rgba(${r},${g},${b},${w.alpha})`;
+          ctx.lineWidth=1.5;ctx.stroke();
+        });
+        // Fill under bottom wave
+        const w=waves[2];
+        ctx.beginPath();ctx.moveTo(0,H);
+        for(let x=0;x<=W;x+=3) ctx.lineTo(x,w.y+Math.sin((x/W)*Math.PI*w.freq+t*w.spd)*w.amp);
+        ctx.lineTo(W,H);ctx.closePath();
+        const grad=ctx.createLinearGradient(0,0,0,H);
+        grad.addColorStop(0,'transparent');grad.addColorStop(1,`rgba(${r},${g},${b},.08)`);
+        ctx.fillStyle=grad;ctx.fill();
+        requestAnimationFrame(frame);
+      }
+      frame();
+    },
+
+    cube3d: function(cv, color) {
+      const ctx = cv.getContext('2d'), W=cv.width, H=cv.height;
+      let t=0;
+      const hex=color.replace('#','');
+      const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+      const s=Math.min(W,H)*.28;
+      function project(x,y,z,rx,ry){
+        const cosX=Math.cos(rx),sinX=Math.sin(rx);
+        const cosY=Math.cos(ry),sinY=Math.sin(ry);
+        let y2=y*cosX-z*sinX,z2=y*sinX+z*cosX;
+        let x2=x*cosY+z2*sinY,z3=-x*sinY+z2*cosY;
+        const fov=5; const scale=fov/(fov+z3/s+1.5);
+        return [W/2+x2*scale*(s*.9), H/2+y2*scale*(s*.9)];
+      }
+      const verts=[[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+      const faces=[[0,1,2,3],[4,5,6,7],[0,1,5,4],[2,3,7,6],[0,3,7,4],[1,2,6,5]];
+      function frame(){
+        ctx.clearRect(0,0,W,H);t+=.008;
+        const rx=t*.7,ry=t;
+        const alphas=[.22,.12,.18,.14,.16,.1];
+        faces.forEach((f,i)=>{
+          const pts=f.map(vi=>project(...verts[vi].map(v=>v*s*.55),rx,ry));
+          ctx.beginPath();pts.forEach((p,j)=>{j?ctx.lineTo(...p):ctx.moveTo(...p)});ctx.closePath();
+          ctx.strokeStyle=`rgba(${r},${g},${b},${.35+alphas[i]})`;ctx.lineWidth=1;ctx.stroke();
+          ctx.fillStyle=`rgba(${r},${g},${b},${alphas[i]})`;ctx.fill();
+        });
+        // Corner glows
+        verts.forEach(v=>{
+          const [px,py]=project(...v.map(c=>c*s*.55),rx,ry);
+          const dot=ctx.createRadialGradient(px,py,0,px,py,4);
+          dot.addColorStop(0,`rgba(${r},${g},${b},.7)`);dot.addColorStop(1,'transparent');
+          ctx.fillStyle=dot;ctx.beginPath();ctx.arc(px,py,4,0,Math.PI*2);ctx.fill();
+        });
+        requestAnimationFrame(frame);
+      }
+      frame();
+    },
+
+    particles: function(cv, color) {
+      const ctx = cv.getContext('2d'), W=cv.width, H=cv.height;
+      const hex=color.replace('#','');
+      const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+      const pts=Array.from({length:18},()=>({
+        x:Math.random()*W, y:Math.random()*H,
+        vx:(Math.random()-.5)*.6, vy:(Math.random()-.5)*.6,
+        r:Math.random()*2+.8, a:Math.random()*.7+.2
+      }));
+      function frame(){
+        ctx.clearRect(0,0,W,H);
+        pts.forEach(p=>{
+          p.x+=p.vx;p.y+=p.vy;
+          if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+          const grd=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3.5);
+          grd.addColorStop(0,`rgba(${r},${g},${b},${p.a})`);grd.addColorStop(1,'transparent');
+          ctx.fillStyle=grd;ctx.beginPath();ctx.arc(p.x,p.y,p.r*3.5,0,Math.PI*2);ctx.fill();
+          ctx.fillStyle=`rgba(${r},${g},${b},${Math.min(p.a*1.5,1)})`;
+          ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+        });
+        // Líneas entre cercanos
+        for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+          const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+          if(d<55){ctx.strokeStyle=`rgba(${r},${g},${b},${(1-d/55)*.18})`;ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();}
+        }
+        requestAnimationFrame(frame);
+      }
+      frame();
+    },
+
+    ring: function(cv, color) {
+      const ctx = cv.getContext('2d'), W=cv.width, H=cv.height;
+      let t=0;
+      const hex=color.replace('#','');
+      const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+      const cx=W/2, cy=H/2;
+      function frame(){
+        ctx.clearRect(0,0,W,H);t+=.022;
+        const rings=[
+          {rx:W*.3, ry:H*.18, rot:t, lw:1.2, a:.5},
+          {rx:W*.22,ry:H*.13, rot:-t*1.3, lw:.8, a:.3},
+          {rx:W*.38,ry:H*.12, rot:t*.6, lw:.6, a:.2},
+        ];
+        rings.forEach(rn=>{
+          ctx.save();ctx.translate(cx,cy);ctx.rotate(rn.rot);
+          ctx.beginPath();ctx.ellipse(0,0,rn.rx,rn.ry,0,0,Math.PI*2);
+          ctx.strokeStyle=`rgba(${r},${g},${b},${rn.a})`;ctx.lineWidth=rn.lw;ctx.stroke();
+          // Moving dot on ring
+          const dx=Math.cos(t*2)*rn.rx, dy=Math.sin(t*2)*rn.ry;
+          const dg=ctx.createRadialGradient(dx,dy,0,dx,dy,5);
+          dg.addColorStop(0,`rgba(${r},${g},${b},.9)`);dg.addColorStop(1,'transparent');
+          ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dx,dy,5,0,Math.PI*2);ctx.fill();
+          ctx.restore();
+        });
+        // Center pulse
+        const pulse=.6+.4*Math.sin(t*3);
+        const cg=ctx.createRadialGradient(cx,cy,0,cx,cy,10*pulse);
+        cg.addColorStop(0,`rgba(${r},${g},${b},.5)`);cg.addColorStop(1,'transparent');
+        ctx.fillStyle=cg;ctx.beginPath();ctx.arc(cx,cy,10*pulse,0,Math.PI*2);ctx.fill();
+        requestAnimationFrame(frame);
+      }
+      frame();
+    },
+
+    dna: function(cv, color) {
+      const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+      let t=0;
+      const hex=color.replace('#','');
+      const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+      const steps=8;
+      function frame(){
+        ctx.clearRect(0,0,W,H);t+=.025;
+        const x0=W*.25, x1=W*.75;
+        for(let i=0;i<steps;i++){
+          const frac=i/(steps-1);
+          const y=H*.1+frac*H*.8;
+          const offset=Math.sin(frac*Math.PI*2+t)*H*.15;
+          const ax=x0+offset, bx=x1-offset;
+          const alpha=.4+.4*Math.abs(Math.sin(frac*Math.PI+t));
+          // Strand A
+          if(i>0){
+            const prevY=H*.1+(i-1)/(steps-1)*H*.8;
+            const prevOff=Math.sin((i-1)/(steps-1)*Math.PI*2+t)*H*.15;
+            ctx.beginPath();ctx.moveTo(x0+prevOff,prevY);ctx.lineTo(ax,y);
+            ctx.strokeStyle=`rgba(${r},${g},${b},.4)`;ctx.lineWidth=1.2;ctx.stroke();
+            ctx.beginPath();ctx.moveTo(x1-prevOff,prevY);ctx.lineTo(bx,y);
+            ctx.strokeStyle=`rgba(${r},${g},${b},.4)`;ctx.lineWidth=1.2;ctx.stroke();
+          }
+          // Rung
+          ctx.beginPath();ctx.moveTo(ax,y);ctx.lineTo(bx,y);
+          ctx.strokeStyle=`rgba(${r},${g},${b},${alpha*.5})`;ctx.lineWidth=.8;ctx.stroke();
+          // Nodes
+          [ax,bx].forEach(px=>{
+            const ng=ctx.createRadialGradient(px,y,0,px,y,4);
+            ng.addColorStop(0,`rgba(${r},${g},${b},${alpha})`);ng.addColorStop(1,'transparent');
+            ctx.fillStyle=ng;ctx.beginPath();ctx.arc(px,y,4,0,Math.PI*2);ctx.fill();
+          });
+        }
+        requestAnimationFrame(frame);
+      }
+      frame();
+    },
+  };
+
+  // Assign animation type by tag index
+  const ANIMKEYS=['orbit','wave','cube3d','particles','ring','dna'];
+
   const t1=[
-    {t:'Facturación Electrónica SRI',c:'#7c6af7'},{t:'POS Táctil',c:'#06d6a0'},
-    {t:'Contabilidad Automatizada',c:'#7c6af7'},{t:'WhatsApp IA 24/7',c:'#25d366'},
-    {t:'Nómina IESS',c:'#f5c842'},{t:'Portal de Clientes PWA',c:'#7c6af7'},
-    {t:'Firma Digital P12',c:'#06d6a0'},{t:'Multi-bodega',c:'#a855f7'},
-    {t:'PayPal QR',c:'#7c6af7'},{t:'Hecho en Ecuador 🇪🇨',c:'#f5c842'},{t:'ATS Mensual',c:'#7c6af7'},
+    {t:'Facturación Electrónica SRI',c:'#7c6af7',anim:'orbit'},
+    {t:'POS Táctil',c:'#06d6a0',anim:'wave'},
+    {t:'Contabilidad Automatizada',c:'#7c6af7',anim:'cube3d'},
+    {t:'WhatsApp IA 24/7',c:'#25d366',anim:'particles'},
+    {t:'Nómina IESS',c:'#f5c842',anim:'ring'},
+    {t:'Portal de Clientes PWA',c:'#a855f7',anim:'dna'},
+    {t:'Firma Digital P12',c:'#06d6a0',anim:'orbit'},
+    {t:'Multi-bodega',c:'#7c6af7',anim:'cube3d'},
+    {t:'PayPal QR',c:'#f5c842',anim:'wave'},
+    {t:'Hecho en Ecuador 🇪🇨',c:'#f5c842',anim:'particles'},
+    {t:'ATS Mensual',c:'#7c6af7',anim:'ring'},
   ];
   const t2=[
-    {t:'Libro Diario',c:'#06d6a0'},{t:'Balance General',c:'#7c6af7'},
-    {t:'Formulario 104 Auto',c:'#f5c842'},{t:'Formulario 101 Auto',c:'#7c6af7'},
-    {t:'Inventario Tiempo Real',c:'#06d6a0'},{t:'Importaciones CIF',c:'#a855f7'},
-    {t:'Liquidaciones SRI',c:'#7c6af7'},{t:'Actas Finiquito',c:'#ff6b6b'},
-    {t:'Conciliación Bancaria',c:'#06d6a0'},{t:'SRI Certificado ✓',c:'#f5c842'},
+    {t:'Libro Diario',c:'#06d6a0',anim:'wave'},
+    {t:'Balance General',c:'#7c6af7',anim:'orbit'},
+    {t:'Formulario 104 Auto',c:'#f5c842',anim:'ring'},
+    {t:'Formulario 101 Auto',c:'#a855f7',anim:'dna'},
+    {t:'Inventario Tiempo Real',c:'#06d6a0',anim:'particles'},
+    {t:'Importaciones CIF',c:'#7c6af7',anim:'cube3d'},
+    {t:'Liquidaciones SRI',c:'#7c6af7',anim:'orbit'},
+    {t:'Actas Finiquito',c:'#ff6b6b',anim:'wave'},
+    {t:'Conciliación Bancaria',c:'#06d6a0',anim:'ring'},
+    {t:'SRI Certificado ✓',c:'#f5c842',anim:'dna'},
   ];
-  function build(id,list){
-    const row=document.getElementById(id);
-    row.innerHTML=[...list,...list,...list].map(t=>`<div class="mq-tag"><span style="background:${t.c};box-shadow:0 0 6px ${t.c}55"></span>${t.t}</div>`).join('');
+
+  function buildCard(item) {
+    const div = document.createElement('div');
+    div.className = 'mq-card';
+    div.style.borderColor = item.c.replace(')',', .25)').replace('#', 'rgba(').replace(/^rgba\(([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i, (m,r,g,b)=>`rgba(${parseInt(r,16)},${parseInt(g,16)},${parseInt(b,16)}`);
+    // Canvas
+    const cv = document.createElement('canvas');
+    cv.width = 220; cv.height = 110;
+    div.appendChild(cv);
+    // Dot
+    const dot = document.createElement('div');
+    dot.className = 'mq-dot';
+    dot.style.background = item.c;
+    dot.style.boxShadow = `0 0 8px ${item.c}88`;
+    div.appendChild(dot);
+    // Label
+    const lbl = document.createElement('div');
+    lbl.className = 'mq-label';
+    lbl.textContent = item.t;
+    div.appendChild(lbl);
+    // Start animation
+    if(ANIM[item.anim]) ANIM[item.anim](cv, item.c);
+    return div;
   }
-  build('mq1',t1);build('mq2',t2);
+
+  function buildRow(id, list) {
+    const row = document.getElementById(id);
+    row.innerHTML = '';
+    [...list,...list,...list].forEach(item => row.appendChild(buildCard(item)));
+  }
+
+  buildRow('mq1', t1);
+  buildRow('mq2', t2);
+
   const s=document.querySelector('.mq-s');
   function upd(){
     const r=s.getBoundingClientRect(),off=(window.innerHeight-r.top)*.25;
