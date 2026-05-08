@@ -16,6 +16,16 @@
 <link rel="canonical" href="https://nexuswere.com">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
 
+<!-- ── PWA & FAVICON ── -->
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NexusWere">
+<meta name="theme-color" content="#060608">
+
 <!-- ── OPEN GRAPH (WhatsApp, Facebook, LinkedIn) ── -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nexuswere.com">
@@ -1697,6 +1707,15 @@ document.querySelectorAll('.float-btn').forEach((btn,i)=>{
     btn.style.transform='translateX(0)';
   },800+(i*120));
 });
+
+// ── PWA SERVICE WORKER ──
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/sw.js')
+      .then(()=>console.log('SW registrado'))
+      .catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
