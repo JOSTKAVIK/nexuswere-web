@@ -363,6 +363,21 @@ nav.sc{background:rgba(6,6,10,.92)}
 .nxm-pp-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(0,44,135,.55)}
 @keyframes nxm-spin{to{transform:rotate(360deg)}}
 .nxm-pp-err{background:rgba(220,50,50,.1);border:1px solid rgba(220,50,50,.25);border-radius:10px;padding:12px 14px;font-size:12px;color:#f87171;text-align:center;margin-top:10px;display:none}
+.nxm-email-form{margin-top:4px}
+.nxm-email-form label{display:block;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t2);margin-bottom:7px}
+.nxm-email-form input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;padding:13px 15px;font-size:14px;color:var(--t);font-family:var(--fb);outline:none;transition:border-color .2s}
+.nxm-email-form input:focus{border-color:rgba(124,106,247,.6);background:rgba(124,106,247,.06)}
+.nxm-email-form input::placeholder{color:rgba(255,255,255,.25)}
+.nxm-send-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:15px;border-radius:12px;font-size:13px;font-weight:800;cursor:none;border:none;font-family:var(--fb);transition:all .3s cubic-bezier(.23,1,.32,1);letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#4a3db8 0%,#7c6af7 50%,#a855f7 100%);color:#fff;box-shadow:0 4px 20px rgba(124,106,247,.35),inset 0 1px 0 rgba(255,255,255,.15);margin-top:12px}
+.nxm-send-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,106,247,.5)}
+.nxm-send-btn:disabled{opacity:.5;transform:none}
+.nxm-success{text-align:center;padding:8px 0}
+.nxm-success-icon{font-size:44px;margin-bottom:14px}
+.nxm-success-title{font-family:var(--fb);font-size:17px;font-weight:800;color:var(--t);margin-bottom:8px}
+.nxm-success-sub{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:20px}
+.nxm-code-disp{background:rgba(124,106,247,.1);border:1.5px solid rgba(124,106,247,.3);border-radius:12px;padding:18px;text-align:center;margin:16px 0}
+.nxm-code-disp small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(124,106,247,.8);display:block;margin-bottom:8px}
+.nxm-code-disp span{font-family:var(--fm);font-size:20px;font-weight:900;color:var(--t);letter-spacing:.15em;word-break:break-all}
 
 /* Objetos 3D flotantes — SIN fondo, con mix-blend-mode */
 .obj3d{
@@ -1717,26 +1732,30 @@ document.querySelectorAll('.fb').forEach((b,i)=>{
 </div>
 
 <script>
+/* ─── CONFIG ───────────────────────────────────────────────────── */
 var NXM_CLIENT_ID='AYNyXX_kC16pB_bzrXmxzXb6-v54jYFZeZWMeLr1R0Hq4BGQTZiKOTRJzujQXg1anSHPpOvUmfc-Zn5U';
+var NXM_BACKEND='https://app.nexuswere.com'; // URL de Railway
 var NXM_PLANES={
   basic:{planId:'P-5RD90410F65255625NH74YKA',label:'TALOS BASIC · $150/mes',name:'TALOS Basic',monto:'$150.00 USD'},
-  pro:{planId:'P-7FT82000KT359654NNH7424Q',label:'TALOS PRO · $200/mes',name:'TALOS Pro',monto:'$200.00 USD'}
+  pro:  {planId:'P-7FT82000KT359654NNH7424Q',label:'TALOS PRO · $200/mes',  name:'TALOS Pro',  monto:'$200.00 USD'}
 };
-var nxmPlanActivo='basic',nxmSdkOk=false,nxmSdkCargando=false;
+var nxmPlanActivo='basic', nxmSubId=null, nxmSdkOk=false, nxmSdkCargando=false;
 
+/* ─── ABRIR MODAL ─────────────────────────────────────────────── */
 function openModal(tipo,plan){
   var d=NXM_PLANES[plan];
   if(tipo==='pp'){
-    nxmPlanActivo=plan;
+    nxmPlanActivo=plan; nxmSubId=null;
     document.getElementById('nxm-pp-plan').textContent=d.label;
     document.getElementById('nxm-pp-planval').textContent=d.name;
     document.getElementById('nxm-pp-monto').textContent=d.monto;
-    document.getElementById('paypal-button-container').innerHTML='';
+    var cont=document.getElementById('paypal-button-container');
+    cont.innerHTML='';
     document.getElementById('nxm-pp-loading').style.display='block';
     nxmOcultarError();
     document.getElementById('nxm-pp').classList.add('op');
     document.body.style.overflow='hidden';
-    nxmCargarSDK(function(){nxmRenderizar(plan);});
+    nxmCargarSDK(function(){nxmRenderizarBotones(plan);});
   } else {
     document.getElementById('nxm-tr-plan').textContent=d.label;
     document.getElementById('nxm-tr-monto').textContent=d.monto;
@@ -1745,6 +1764,7 @@ function openModal(tipo,plan){
   }
 }
 
+/* ─── CERRAR MODAL ────────────────────────────────────────────── */
 function closeModal(tipo,e){
   var o=document.getElementById('nxm-'+tipo);
   if(e&&e.target!==o&&!e.target.classList.contains('nxm-close'))return;
@@ -1752,60 +1772,156 @@ function closeModal(tipo,e){
   document.body.style.overflow='';
 }
 
+/* ─── CARGAR SDK PAYPAL (solo una vez) ────────────────────────── */
 function nxmCargarSDK(cb){
   if(nxmSdkOk&&window.paypal){cb();return;}
   if(nxmSdkCargando){
-    var t=setInterval(function(){if(window.paypal){clearInterval(t);nxmSdkOk=true;cb();}},120);
+    var t=setInterval(function(){if(window.paypal){clearInterval(t);nxmSdkOk=true;cb();}},150);
     return;
   }
   nxmSdkCargando=true;
   var s=document.createElement('script');
-  s.src='https://www.paypal.com/sdk/js?client-id='+NXM_CLIENT_ID+'&vault=true&intent=subscription&components=buttons&locale=es_MX&currency=USD';
+  s.src='https://www.paypal.com/sdk/js'
+    +'?client-id='+NXM_CLIENT_ID
+    +'&vault=true&intent=subscription&components=buttons&locale=es_MX&currency=USD';
   s.setAttribute('data-sdk-integration-source','button-factory');
   s.onload=function(){nxmSdkOk=true;nxmSdkCargando=false;cb();};
   s.onerror=function(){
     nxmSdkCargando=false;
     document.getElementById('nxm-pp-loading').style.display='none';
-    nxmMostrarError('No se pudo cargar PayPal. Verifica tu conexion e intenta de nuevo.');
+    nxmMostrarError('No se pudo cargar PayPal. Revisa tu conexion e intenta de nuevo.');
   };
   document.head.appendChild(s);
 }
 
-function nxmRenderizar(plan){
+/* ─── RENDERIZAR BOTONES PAYPAL ───────────────────────────────── */
+function nxmRenderizarBotones(plan){
   var d=NXM_PLANES[plan];
   var cont=document.getElementById('paypal-button-container');
   cont.innerHTML='';
   document.getElementById('nxm-pp-loading').style.display='none';
+
   paypal.Buttons({
     style:{shape:'rect',color:'blue',layout:'vertical',label:'subscribe'},
+
     createSubscription:function(data,actions){
       return actions.subscription.create({plan_id:d.planId});
     },
+
+    /* ── PAGO APROBADO → mostrar form de email ─────────────────── */
     onApprove:function(data){
-      cont.innerHTML=
-        '<div style="padding:22px 10px;text-align:center">'+
-        '<div style="font-size:40px;margin-bottom:12px">\u2705</div>'+
-        '<div style="font-family:var(--fb);font-size:15px;font-weight:800;color:var(--t);margin-bottom:6px">Suscripcion activada!</div>'+
-        '<div style="font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:14px">ID: <span style="font-family:var(--fm);color:var(--a)">'+data.subscriptionID+'</span><br>Recibiras acceso a tu cuenta en breve.</div>'+
-        '<a href="https://wa.me/593962745054?text=Hola!%20Acabo%20de%20suscribirme%20a%20TALOS.%20Mi%20ID%20es%3A%20'+data.subscriptionID+'" target="_blank" style="display:inline-flex;align-items:center;gap:7px;padding:11px 20px;border-radius:10px;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);color:#25d366;font-size:12px;font-weight:700;text-decoration:none;font-family:var(--fb)">Confirmar por WhatsApp</a></div>';
+      nxmSubId=data.subscriptionID;
+      nxmMostrarFormEmail(plan, data.subscriptionID);
     },
+
     onError:function(err){
       console.error('PayPal error:',err);
-      nxmMostrarError('Error en el pago. Intenta de nuevo o contactanos por WhatsApp.');
+      nxmMostrarError('Ocurrio un error en el pago. Intenta de nuevo o contactanos por WhatsApp.');
     },
     onCancel:function(){
-      nxmMostrarError('Cancelaste el proceso. Puedes intentarlo de nuevo cuando quieras.');
+      nxmMostrarError('Cancelaste el proceso. Puedes intentarlo cuando quieras.');
     }
   }).render('#paypal-button-container');
 }
 
+/* ─── FORM: pedir email tras pago aprobado ────────────────────── */
+function nxmMostrarFormEmail(plan, subId){
+  var d=NXM_PLANES[plan];
+  var cont=document.getElementById('paypal-button-container');
+  cont.innerHTML=
+    '<div style="padding:4px 0">'
+    +'<div style="text-align:center;margin-bottom:18px">'
+    +'<div style="font-size:36px;margin-bottom:8px">🎉</div>'
+    +'<div style="font-family:var(--fb);font-size:15px;font-weight:800;color:var(--t);margin-bottom:6px">Pago confirmado</div>'
+    +'<div style="font-size:12px;color:var(--t2);line-height:1.6">Ingresa tu correo para recibir<br>el codigo de licencia de <strong>'+d.name+'</strong></div>'
+    +'</div>'
+    +'<div class="nxm-email-form">'
+    +'<label for="nxm-email-inp">Correo electronico</label>'
+    +'<input type="email" id="nxm-email-inp" placeholder="tucorreo@email.com" autocomplete="email">'
+    +'</div>'
+    +'<div id="nxm-email-err" style="font-size:12px;color:#f87171;margin-top:8px;display:none"></div>'
+    +'<button class="nxm-send-btn" id="nxm-send-btn" onclick="nxmEnviarLicencia(\''+plan+'\',\''+subId+'\')">'
+    +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>'
+    +'Enviarme mi licencia'
+    +'</button>'
+    +'</div>';
+
+  // focus al input
+  setTimeout(function(){
+    var inp=document.getElementById('nxm-email-inp');
+    if(inp)inp.focus();
+  },100);
+}
+
+/* ─── ENVIAR: llamar al backend y mostrar resultado ──────────────*/
+function nxmEnviarLicencia(plan, subId){
+  var inp=document.getElementById('nxm-email-inp');
+  var btn=document.getElementById('nxm-send-btn');
+  var errEl=document.getElementById('nxm-email-err');
+  var email=(inp?inp.value:'').trim();
+
+  // Validar email
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    if(errEl){errEl.textContent='Ingresa un correo valido';errEl.style.display='block';}
+    if(inp)inp.focus();
+    return;
+  }
+  if(errEl)errEl.style.display='none';
+
+  // Estado cargando
+  if(btn){btn.disabled=true;btn.textContent='Enviando...';}
+
+  var d=NXM_PLANES[plan];
+
+  fetch(NXM_BACKEND+'/api/paypal-sub/verify',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({subscriptionId:subId, email:email, planId:d.planId})
+  })
+  .then(function(r){return r.json().then(function(j){return{ok:r.ok,data:j};});})
+  .then(function(res){
+    if(!res.ok){
+      if(btn){btn.disabled=false;btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Reintentar';}
+      if(errEl){errEl.textContent=res.data.message||'Error del servidor. Intenta de nuevo.';errEl.style.display='block';}
+      return;
+    }
+    nxmMostrarExito(res.data, email);
+  })
+  .catch(function(err){
+    console.error('Error al verificar:',err);
+    if(btn){btn.disabled=false;btn.innerHTML='Reintentar';}
+    if(errEl){errEl.textContent='Error de red. Revisa tu conexion e intenta de nuevo.';errEl.style.display='block';}
+  });
+}
+
+/* ─── PANTALLA DE ÉXITO con código ───────────────────────────── */
+function nxmMostrarExito(data, email){
+  var cont=document.getElementById('paypal-button-container');
+  var codeHtml=data.code
+    ?'<div class="nxm-code-disp"><small>Tu codigo de licencia</small><span>'+data.code+'</span></div>'
+    :'';
+  cont.innerHTML=
+    '<div class="nxm-success">'
+    +'<div class="nxm-success-icon">✅</div>'
+    +'<div class="nxm-success-title">Licencia enviada</div>'
+    +'<div class="nxm-success-sub">Enviamos tu codigo de licencia a<br><strong style="color:var(--t)">'+email+'</strong><br>Revisa tu bandeja de entrada (y spam).</div>'
+    +codeHtml
+    +'<div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">'
+    +'<a href="https://app.nexuswere.com" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:11px;background:linear-gradient(135deg,#4a3db8,#7c6af7);color:#fff;font-size:12px;font-weight:800;text-decoration:none;font-family:var(--fb);letter-spacing:.04em;text-transform:uppercase">Activar TALOS ahora</a>'
+    +'<a href="https://wa.me/593962745054?text=Hola!%20Me%20suscribo%20a%20TALOS%20('+encodeURIComponent(data.plan||'')+')" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;border-radius:11px;background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.3);color:#25d366;font-size:12px;font-weight:700;text-decoration:none;font-family:var(--fb)">Confirmar por WhatsApp</a>'
+    +'</div>'
+    +'</div>';
+}
+
+/* ─── HELPERS ─────────────────────────────────────────────────── */
 function nxmMostrarError(msg){
   var el=document.getElementById('nxm-pp-err');
   if(!el){
     el=document.createElement('div');
     el.id='nxm-pp-err';
     el.className='nxm-pp-err';
-    document.getElementById('paypal-button-container').after(el);
+    var cont=document.getElementById('paypal-button-container');
+    if(cont)cont.after(el);
   }
   el.textContent=msg;
   el.style.display='block';
@@ -1815,31 +1931,67 @@ function nxmOcultarError(){
   if(el)el.style.display='none';
 }
 
+/* ─── COPIAR NÚMERO DE CUENTA ─────────────────────────────────── */
 function copiarCuenta(){
   navigator.clipboard.writeText('2203290189').then(function(){
     document.getElementById('txt-copy').textContent='Copiado!';
-    document.getElementById('ico-copy').outerHTML='<svg id="ico-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06d6a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-    setTimeout(function(){document.getElementById('txt-copy').textContent='Copiar';},2200);
+    var ico=document.getElementById('ico-copy');
+    if(ico)ico.outerHTML='<svg id="ico-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06d6a0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    setTimeout(function(){
+      var t=document.getElementById('txt-copy');
+      if(t)t.textContent='Copiar';
+    },2200);
+  }).catch(function(){
+    // Fallback para navegadores sin clipboard API
+    var el=document.createElement('textarea');
+    el.value='2203290189';
+    el.style.position='fixed';el.style.opacity='0';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    var t=document.getElementById('txt-copy');
+    if(t){t.textContent='Copiado!';setTimeout(function(){t.textContent='Copiar';},2200);}
   });
 }
 
+/* ─── ABRIR BANCO PICHINCHA ───────────────────────────────────── */
 function abrirBancoPichincha(){
-  var ua=navigator.userAgent||'';
-  var esAndroid=/android/i.test(ua);
-  var esIOS=/iphone|ipad|ipod/i.test(ua);
+  var ua=(navigator.userAgent||'').toLowerCase();
+  var esAndroid=ua.indexOf('android')>-1;
+  var esIOS=/iphone|ipad|ipod/.test(ua);
+
   if(esAndroid){
-    window.location.href='intent://open#Intent;scheme=bpichincha;package=com.bancopichincha.movil;S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.bancopichincha.movil;end';
+    /* En Android: intent:// es la única forma fiable de abrir otra app.
+       El fallback S.browser_fallback_url se activa automáticamente si la app no está instalada. */
+    var intentUrl='intent://startapp'
+      +'#Intent'
+      +';scheme=bpichincha'
+      +';package=com.bancopichincha.movil'
+      +';S.browser_fallback_url=https%3A%2F%2Fplay.google.com%2Fstore%2Fapps%2Fdetails%3Fid%3Dcom.bancopichincha.movil'
+      +';end';
+    window.location.href=intentUrl;
+
   } else if(esIOS){
+    /* En iOS: intentar el universal link, fallback a App Store */
+    var abrioApp=false;
     var t=setTimeout(function(){
-      window.location.href='https://apps.apple.com/ec/app/banco-pichincha/id1481419634';
-    },1200);
-    window.addEventListener('blur',function(){clearTimeout(t);},{once:true});
-    window.location.href='bpichincha://open';
+      if(!abrioApp){
+        window.location.href='https://apps.apple.com/ec/app/mi-banco-pichincha/id1481419634';
+      }
+    },1500);
+    /* El evento blur dispara cuando la app se abre y el browser pierde foco */
+    var onBlur=function(){abrioApp=true;clearTimeout(t);window.removeEventListener('blur',onBlur);};
+    window.addEventListener('blur',onBlur);
+    window.location.href='bpichincha://';
+
   } else {
+    /* Escritorio: banca en línea web */
     window.open('https://www.bancopichincha.com/web/personas/banca-en-linea','_blank');
   }
 }
 
+/* ─── ESC cierra cualquier modal ─────────────────────────────── */
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape'){
     closeModal('pp');
