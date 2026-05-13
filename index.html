@@ -1674,6 +1674,7 @@ document.querySelectorAll('.fb').forEach((b,i)=>{
     </div>
     <hr class="nxm-sep">
     <div id="paypal-button-container" style="min-height:50px;border-radius:12px;overflow:hidden"></div>
+    <div id="googlepay-button-container" style="display:none;margin-top:10px;border-radius:12px;overflow:hidden;min-height:48px"></div>
     <div id="nxm-pp-loading" style="text-align:center;padding:14px 0;color:var(--t2);font-size:12px">
       <svg style="animation:nxm-spin 1s linear infinite;margin-right:6px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
       Cargando PayPal…
@@ -1780,10 +1781,19 @@ function nxmCargarSDK(cb){
     return;
   }
   nxmSdkCargando=true;
+
+  // Cargar Google Pay API si no está cargada
+  if(!window.google||!window.google.payments){
+    var gp=document.createElement('script');
+    gp.src='https://pay.google.com/gp/p/js/pay.js';
+    gp.async=true;
+    document.head.appendChild(gp);
+  }
+
   var s=document.createElement('script');
   s.src='https://www.paypal.com/sdk/js'
     +'?client-id='+NXM_CLIENT_ID
-    +'&vault=true&intent=subscription&components=buttons&locale=es_MX&currency=USD';
+    +'&vault=true&intent=subscription&components=buttons,googlepay&locale=es_MX&currency=USD';
   s.setAttribute('data-sdk-integration-source','button-factory');
   s.onload=function(){nxmSdkOk=true;nxmSdkCargando=false;cb();};
   s.onerror=function(){
@@ -1799,6 +1809,9 @@ function nxmRenderizarBotones(plan){
   var d=NXM_PLANES[plan];
   var cont=document.getElementById('paypal-button-container');
   cont.innerHTML='';
+  // Limpiar Google Pay también
+  var gpCont=document.getElementById('googlepay-button-container');
+  if(gpCont){gpCont.innerHTML='';gpCont.style.display='none';}
   document.getElementById('nxm-pp-loading').style.display='none';
 
   paypal.Buttons({
@@ -1822,6 +1835,77 @@ function nxmRenderizarBotones(plan){
       nxmMostrarError('Cancelaste el proceso. Puedes intentarlo cuando quieras.');
     }
   }).render('#paypal-button-container');
+
+  // Renderizar Google Pay en paralelo si está disponible
+  nxmRenderizarGooglePay(plan);
+}
+
+/* ─── RENDERIZAR GOOGLE PAY ───────────────────────────────────── */
+async function nxmRenderizarGooglePay(plan){
+  var d=NXM_PLANES[plan];
+  var cont=document.getElementById('googlepay-button-container');
+  if(!cont) return;
+  cont.style.display='none';
+  cont.innerHTML='';
+
+  // Google Pay solo disponible en Android y Chrome desktop
+  if(!window.paypal||!window.paypal.Googlepay) return;
+
+  try{
+    var gp=window.paypal.Googlepay();
+    var config=await gp.config();
+
+    // Verificar que el entorno soporte Google Pay
+    if(!config||!config.allowedPaymentMethods) return;
+
+    var paymentsClient=new google.payments.api.PaymentsClient({
+      environment: config.environment || 'PRODUCTION',
+    });
+
+    var isReady=await paymentsClient.isReadyToPay({
+      apiVersion:2, apiVersionMinor:0,
+      allowedPaymentMethods: config.allowedPaymentMethods,
+    });
+    if(!isReady.result) return;
+
+    // Mostrar el contenedor solo si Google Pay está disponible
+    cont.style.display='block';
+
+    var btn=paymentsClient.createButton({
+      onClick: async function(){
+        try{
+          var paymentDataRequest={
+            apiVersion:2, apiVersionMinor:0,
+            allowedPaymentMethods: config.allowedPaymentMethods,
+            merchantInfo: config.merchantInfo,
+            transactionInfo:{
+              totalPriceStatus:'FINAL',
+              totalPrice: d.monto.replace('$','').replace(' USD',''),
+              currencyCode:'USD',
+              countryCode:'EC',
+            },
+          };
+          var paymentData=await paymentsClient.loadPaymentData(paymentDataRequest);
+          var orderData=await gp.confirmOrder({
+            orderId: paymentData.paymentMethodData.tokenizationData.token,
+            paymentMethodData: paymentData.paymentMethodData,
+          });
+          if(orderData&&orderData.id){
+            nxmSubId=orderData.id;
+            nxmMostrarFormEmail(plan, orderData.id);
+          }
+        }catch(e){
+          if(e.statusCode!=='CANCELED')
+            nxmMostrarError('Error con Google Pay. Intenta con PayPal o contactanos por WhatsApp.');
+        }
+      },
+      buttonColor:'black', buttonType:'subscribe', buttonLocale:'es',
+    });
+    cont.appendChild(btn);
+  }catch(e){
+    // Google Pay no disponible — silencioso, el botón PayPal sigue funcionando
+    console.log('[GooglePay] No disponible:', e.message);
+  }
 }
 
 /* ─── FORM: pedir email tras pago aprobado ────────────────────── */
