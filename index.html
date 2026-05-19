@@ -738,6 +738,7 @@ body{
   border:1px solid var(--line-2);
   transition:transform .4s var(--ease),box-shadow .4s var(--ease);
   overflow:hidden;
+  display:flex;flex-direction:column;
 }
 .plan:hover{transform:translateY(-6px)}
 .plan-pro{
@@ -765,7 +766,7 @@ body{
 .plan-pro .plan-amt{color:var(--mint)}
 .plan-per{font-size:15px;color:var(--ink-dim)}
 .plan-note{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--line)}
-.plan-list{list-style:none;margin-bottom:32px}
+.plan-list{list-style:none;margin-bottom:24px;flex:1}
 .plan-feat{
   display:flex;align-items:flex-start;gap:12px;
   padding:10px 0;font-size:14px;color:var(--paper-2);
@@ -796,7 +797,7 @@ body{
   font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;
   font-family:var(--sans);border:none;
   transition:all .25s var(--ease);
-  margin-bottom:10px;letter-spacing:-.01em;
+  margin-top:auto;letter-spacing:-.01em;
 }
 .plan-cta-primary{background:var(--mint);color:var(--bg)}
 .plan-cta-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px var(--mint-soft)}
@@ -1348,7 +1349,7 @@ footer{
           <li class="plan-feat">100 MB de Espacio en la Nube</li>
           <li class="plan-feat">Contabilidad básica</li>
         </ul>
-        <button class="plan-cta plan-cta-ghost" onclick="openModal('basic')">Suscribirse →</button>
+        <button class="plan-cta plan-cta-ghost" onclick="openModal('basic')">Suscribirse a Basic →</button>
       </div>
 
       <div class="plan plan-pro">
@@ -1380,7 +1381,7 @@ footer{
           <li class="plan-feat">Gestión de Órdenes y Pedidos desde la app de tu negocio</li>
           <li class="plan-feat">Punto de Venta completo</li>
         </ul>
-        <button class="plan-cta plan-cta-primary" onclick="openModal('pro')">Suscribirse →</button>
+        <button class="plan-cta plan-cta-primary" onclick="openModal('pro')">Suscribirse a Pro →</button>
       </div>
     </div>
   </div>
