@@ -635,6 +635,17 @@ body{
   background-position:center;background-repeat:no-repeat;
   margin-top:2px;
 }
+.plan-pro .plan-list{
+  max-height:420px;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:var(--mint-soft) transparent;
+  padding-right:6px;
+  margin-right:-6px;
+}
+.plan-pro .plan-list::-webkit-scrollbar{width:3px}
+.plan-pro .plan-list::-webkit-scrollbar-thumb{background:var(--mint-soft);border-radius:4px}
+.plan-pro .plan-list::-webkit-scrollbar-track{background:transparent}
 .plan-cta{
   display:flex;align-items:center;justify-content:center;gap:8px;
   width:100%;padding:16px;border-radius:14px;
@@ -1222,13 +1233,15 @@ footer{
         <div class="plan-price"><span class="plan-cur">$</span><span class="plan-amt">150</span><span class="plan-per">/ mes</span></div>
         <div class="plan-note">Facturación mensual · Cancela cuando quieras</div>
         <ul class="plan-list">
-          <li class="plan-feat">POS con escáner de código de barras</li>
-          <li class="plan-feat">Facturación SRI — facturas y notas de crédito</li>
-          <li class="plan-feat">Control de inventario y productos</li>
-          <li class="plan-feat">Gestión de clientes y proveedores</li>
-          <li class="plan-feat">Reportes básicos de ventas</li>
-          <li class="plan-feat">100 MB en la nube</li>
-          <li class="plan-feat">Soporte por WhatsApp</li>
+          <li class="plan-feat">Un dispositivo simultáneo</li>
+          <li class="plan-feat">Punto de Venta</li>
+          <li class="plan-feat">Historial de Ventas</li>
+          <li class="plan-feat">Inventario</li>
+          <li class="plan-feat">Clientes</li>
+          <li class="plan-feat">Facturación Electrónica SRI</li>
+          <li class="plan-feat">Proformas / Cotizaciones</li>
+          <li class="plan-feat">100 MB de Espacio en la Nube</li>
+          <li class="plan-feat">Contabilidad básica</li>
         </ul>
         <button class="plan-cta plan-cta-ghost" onclick="openModal('basic')">Suscribirse →</button>
       </div>
@@ -1241,14 +1254,26 @@ footer{
         <div class="plan-price"><span class="plan-cur">$</span><span class="plan-amt">200</span><span class="plan-per">/ mes</span></div>
         <div class="plan-note">USD · Facturación mensual · Cancela cuando quieras</div>
         <ul class="plan-list">
-          <li class="plan-feat">Todo lo del plan Basic, más:</li>
-          <li class="plan-feat">Contabilidad completa con asientos automáticos</li>
-          <li class="plan-feat">Asistente IA en WhatsApp — 24/7</li>
-          <li class="plan-feat">Nómina, RRHH y colaboradores</li>
-          <li class="plan-feat">Portal de clientes con app instalable</li>
-          <li class="plan-feat">Importaciones CIF y multi-bodega avanzado</li>
-          <li class="plan-feat">Formularios SRI 104 y 101 automáticos</li>
-          <li class="plan-feat">500 MB en la nube · Soporte prioritario</li>
+          <li class="plan-feat">Microsoft 365 incluido (1 PC)</li>
+          <li class="plan-feat">Asistente con IA para WhatsApp</li>
+          <li class="plan-feat">Código de barras y lector integrado</li>
+          <li class="plan-feat">Envío de facturas por correo ilimitadas</li>
+          <li class="plan-feat">Usuarios ilimitados</li>
+          <li class="plan-feat">Web y App para tus Clientes</li>
+          <li class="plan-feat">Descuentos automáticos para clientes VIP</li>
+          <li class="plan-feat">Cobros con tarjeta vía PayPal</li>
+          <li class="plan-feat">Centros de Costo</li>
+          <li class="plan-feat">500 GB Espacio en la Nube</li>
+          <li class="plan-feat">Multi-Bodega · Importaciones · Facturación Recurrente</li>
+          <li class="plan-feat">Manejo de Proveedores</li>
+          <li class="plan-feat">Contabilidad avanzada — IVA 104, Libro Diario, Rol de Pagos, Retenciones, CxP, ATS, Plan de Cuentas, Activos Fijos, Formularios SRI (104, 103, DIV, 101, XML), Préstamos, P&amp;G, Balance, Libro Mayor, Presupuesto, Flujo de Caja, Indicadores, Exportar Mónica y más</li>
+          <li class="plan-feat">Facturación Electrónica SRI</li>
+          <li class="plan-feat">Gestión de acceso para Colaboradores</li>
+          <li class="plan-feat">Gestión de Clientes</li>
+          <li class="plan-feat">Gestión de Inventario — productos, servicios, cupones y kardex</li>
+          <li class="plan-feat">Historial completo de Ventas</li>
+          <li class="plan-feat">Gestión de Órdenes y Pedidos desde la app de tu negocio</li>
+          <li class="plan-feat">Punto de Venta completo</li>
         </ul>
         <button class="plan-cta plan-cta-primary" onclick="openModal('pro')">Suscribirse →</button>
       </div>
