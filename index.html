@@ -659,41 +659,7 @@ body{
 .plan-cta-ghost{background:var(--surface-2);color:var(--paper);border:1px solid var(--line-2)}
 .plan-cta-ghost:hover{background:var(--surface)}
 
-/* Float 3D objects around pricing */
-.float-3d{
-  position:absolute;pointer-events:none;z-index:1;
-  border-radius:50%;
-  filter:blur(1px);
-  animation:floatY 6s ease-in-out infinite;
-}
-.float-3d.shape-1{
-  top:8%;left:6%;width:140px;height:140px;
-  background:radial-gradient(circle at 30% 30%,var(--mint),oklch(0.3 0.18 28));
-  box-shadow:0 30px 80px -10px var(--mint-soft),inset -10px -10px 30px rgba(0,0,0,.4);
-}
-.float-3d.shape-2{
-  bottom:10%;left:4%;width:90px;height:90px;
-  background:radial-gradient(circle at 30% 30%,var(--amber),oklch(0.3 0.14 70));
-  box-shadow:0 30px 80px -10px var(--amber-soft),inset -10px -10px 30px rgba(0,0,0,.4);
-  animation-delay:-2s;
-}
-.float-3d.shape-3{
-  top:12%;right:5%;width:110px;height:110px;
-  background:radial-gradient(circle at 30% 30%,var(--coral),oklch(0.3 0.14 25));
-  box-shadow:0 30px 80px -10px var(--coral-soft),inset -10px -10px 30px rgba(0,0,0,.4);
-  animation-delay:-3s;
-}
-.float-3d.shape-4{
-  bottom:14%;right:4%;width:70px;height:70px;
-  background:radial-gradient(circle at 30% 30%,var(--violet),oklch(0.3 0.16 295));
-  box-shadow:0 30px 80px -10px oklch(0.7 0.16 295 / .2),inset -10px -10px 30px rgba(0,0,0,.4);
-  animation-delay:-4s;
-}
-@keyframes floatY{
-  0%,100%{transform:translateY(0) rotate(0deg)}
-  50%{transform:translateY(-30px) rotate(8deg)}
-}
-@media(max-width:980px){.float-3d{display:none}}
+@media(max-width:980px){}
 
 /* ────────────────────────────────────────────────
    SERVICES
@@ -1221,11 +1187,6 @@ footer{
       <p class="section-sub" style="margin:0 auto">Sin contratos forzosos. Sin módulos extra. Cancela cuando quieras.</p>
     </div>
     <div class="pricing-grid">
-      <div class="float-3d shape-1"></div>
-      <div class="float-3d shape-2"></div>
-      <div class="float-3d shape-3"></div>
-      <div class="float-3d shape-4"></div>
-
       <div class="plan">
         <div class="plan-eyebrow">TΛLOS Basic</div>
         <div class="plan-name">Para empezar fuerte</div>
