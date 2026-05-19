@@ -1988,6 +1988,12 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal({target
       ctx.stroke();
     }
 
+    t+=0.007;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
 /* ───────────────────────────────────────────────
    TYPEWRITER — hero subtitle
    ─────────────────────────────────────────────── */
@@ -2000,12 +2006,10 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal({target
   let i = 0;
   let started = false;
 
-  // Espera a que el hero sea visible antes de arrancar
   const obs = new IntersectionObserver(entries => {
     if(entries[0].isIntersecting && !started){
       started = true;
       obs.disconnect();
-      // Pequeño delay inicial para que se vea natural
       setTimeout(type, 600);
     }
   }, {threshold: 0.3});
@@ -2016,18 +2020,15 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal({target
       el.textContent = text.slice(0, i);
       el.appendChild(cursor);
       i++;
-      // Velocidad variable: más rápido en espacios, más lento en puntos
       const ch = text[i-1];
       const delay = ch === '.' ? 180 : ch === ',' ? 120 : ch === ' ' ? 45 : 38;
       setTimeout(type, delay);
     } else {
-      // Texto completo — cursor queda parpadeando
       el.appendChild(cursor);
-      cursor.style.animation = 'cursorBlink .75s step-end infinite';
     }
   }
 })();
 
-
+</script>
 </body>
 </html>
