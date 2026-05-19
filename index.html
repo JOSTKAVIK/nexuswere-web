@@ -295,6 +295,49 @@ body{
   -webkit-text-stroke:1px var(--paper);
   color:transparent;
 }
+
+/* ── Shimmer sweep sobre el título ── */
+.hero-title{position:relative;overflow:visible}
+.hero-title::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,128,104,.18) 45%,
+    rgba(255,200,180,.32) 50%,
+    rgba(255,128,104,.18) 55%,
+    transparent 70%
+  );
+  background-size:250% 100%;
+  animation:titleShimmer 3.5s ease-in-out infinite;
+  pointer-events:none;
+  mix-blend-mode:screen;
+  border-radius:4px;
+}
+@keyframes titleShimmer{
+  0%{background-position:200% center;opacity:0}
+  10%{opacity:1}
+  60%{background-position:-50% center;opacity:1}
+  80%,100%{background-position:-50% center;opacity:0}
+}
+
+/* ── Typewriter cursor ── */
+.typewriter-cursor{
+  display:inline-block;
+  width:2px;height:1.1em;
+  background:var(--mint);
+  margin-left:3px;
+  vertical-align:text-bottom;
+  border-radius:1px;
+  opacity:0;
+  animation:cursorBlink .75s step-end infinite;
+}
+@keyframes cursorBlink{
+  0%,100%{opacity:1}
+  50%{opacity:0}
+}
 .hero-grid{
   display:grid;grid-template-columns:1fr auto;gap:80px;align-items:end;
   margin-top:60px;
@@ -1034,10 +1077,7 @@ footer{
     </h1>
     <div class="hero-grid">
       <div>
-        <p class="hero-sub">
-          POS inteligente, facturación electrónica SRI, contabilidad automatizada,
-          WhatsApp IA y nómina. Todo conectado. Una sola plataforma.
-        </p>
+        <p class="hero-sub" id="heroSub"></p>
         <div class="hero-actions">
           <a href="#demo" class="btn btn-primary">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -1948,12 +1988,46 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal({target
       ctx.stroke();
     }
 
-    t+=0.007;
-    requestAnimationFrame(draw);
+/* ───────────────────────────────────────────────
+   TYPEWRITER — hero subtitle
+   ─────────────────────────────────────────────── */
+(function(){
+  const el = document.getElementById('heroSub');
+  if(!el) return;
+  const text = 'POS inteligente, facturación electrónica SRI, contabilidad automatizada, WhatsApp IA y nómina. Todo conectado. Una sola plataforma.';
+  const cursor = document.createElement('span');
+  cursor.className = 'typewriter-cursor';
+  let i = 0;
+  let started = false;
+
+  // Espera a que el hero sea visible antes de arrancar
+  const obs = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting && !started){
+      started = true;
+      obs.disconnect();
+      // Pequeño delay inicial para que se vea natural
+      setTimeout(type, 600);
+    }
+  }, {threshold: 0.3});
+  obs.observe(el);
+
+  function type(){
+    if(i <= text.length){
+      el.textContent = text.slice(0, i);
+      el.appendChild(cursor);
+      i++;
+      // Velocidad variable: más rápido en espacios, más lento en puntos
+      const ch = text[i-1];
+      const delay = ch === '.' ? 180 : ch === ',' ? 120 : ch === ' ' ? 45 : 38;
+      setTimeout(type, delay);
+    } else {
+      // Texto completo — cursor queda parpadeando
+      el.appendChild(cursor);
+      cursor.style.animation = 'cursorBlink .75s step-end infinite';
+    }
   }
-  draw();
 })();
 
-</script>
+
 </body>
 </html>
