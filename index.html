@@ -36,6 +36,120 @@
 <meta name="author" content="NexusWere">
 <meta name="geo.region" content="EC-P">
 <meta name="geo.placename" content="Quito, Ecuador">
+<!-- Datos estructurados JSON-LD -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://nexuswere.com/#website",
+      "url": "https://nexuswere.com/",
+      "name": "NexusWere · TΛLOS",
+      "description": "Sistema operativo para negocios en Ecuador. Facturación electrónica SRI, POS, contabilidad, WhatsApp IA y nómina.",
+      "inLanguage": "es-EC",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://app.nexuswere.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://nexuswere.com/#organization",
+      "name": "NexusWere",
+      "url": "https://nexuswere.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://nexuswere.com/icon-512.png",
+        "width": 512,
+        "height": 512
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+593962745054",
+        "contactType": "customer service",
+        "availableLanguage": "Spanish",
+        "areaServed": "EC"
+      },
+      "sameAs": [
+        "https://wa.me/593962745054"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Quito",
+        "addressCountry": "EC"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://nexuswere.com/#software",
+      "name": "TΛLOS",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web, Android, iOS",
+      "url": "https://app.nexuswere.com/",
+      "offers": [
+        {
+          "@type": "Offer",
+          "name": "TΛLOS Basic",
+          "price": "150",
+          "priceCurrency": "USD",
+          "billingIncrement": "P1M",
+          "description": "Punto de Venta, Facturación Electrónica SRI, Inventario, Clientes, 100MB nube"
+        },
+        {
+          "@type": "Offer",
+          "name": "TΛLOS Pro",
+          "price": "200",
+          "priceCurrency": "USD",
+          "billingIncrement": "P1M",
+          "description": "Todo el plan Basic más contabilidad avanzada, IA WhatsApp, Microsoft 365, multi-bodega, 500GB nube"
+        }
+      ],
+      "publisher": {
+        "@id": "https://nexuswere.com/#organization"
+      }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://nexuswere.com/#webpage",
+      "url": "https://nexuswere.com/",
+      "name": "NexusWere · TΛLOS — Sistema operativo para negocios en Ecuador",
+      "isPartOf": { "@id": "https://nexuswere.com/#website" },
+      "about": { "@id": "https://nexuswere.com/#software" },
+      "description": "TΛLOS by NexusWere — Facturación electrónica SRI, POS, contabilidad, WhatsApp IA y nómina. Hecho en Quito.",
+      "inLanguage": "es-EC",
+      "hasPart": [
+        {
+          "@type": "WebPageElement",
+          "name": "Demo en vivo",
+          "url": "https://nexuswere.com/#demo",
+          "description": "Prueba el POS, contabilidad y facturación SRI en tiempo real"
+        },
+        {
+          "@type": "WebPageElement",
+          "name": "Funciones",
+          "url": "https://nexuswere.com/#funciones",
+          "description": "POS inteligente, facturación SRI, contabilidad, asistente IA y más"
+        },
+        {
+          "@type": "WebPageElement",
+          "name": "Precios",
+          "url": "https://nexuswere.com/#precio",
+          "description": "Plan Basic $150/mes y Plan Pro $200/mes con Microsoft 365 incluido"
+        },
+        {
+          "@type": "WebPageElement",
+          "name": "Servicios NexusWere",
+          "url": "https://nexuswere.com/#servicios",
+          "description": "Soporte PC, móviles certificados y asesoría tecnológica en Quito"
+        }
+      ]
+    }
+  ]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
